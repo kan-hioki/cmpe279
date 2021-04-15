@@ -59,31 +59,31 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-	int pid = fork();
-	if (pid == 0) {
-		// Child process
-		struct passwd* user_info = getpwnam("nobody");
-		setuid(user_info->pw_uid);
+    int pid = fork();
+    if (pid == 0) {
+        // Child process
+        struct passwd* user_info = getpwnam("nobody"); // Get user id of nobody
+        setuid(user_info->pw_uid); // Change user previlege to nobody from here
 
-		valread = read( new_socket , buffer, 1024);
-    	printf("%s\n",buffer );
-    	send(new_socket , hello , strlen(hello) , 0 );
-    	printf("Hello message sent\n");
+        valread = read( new_socket , buffer, 1024);
+        printf("%s\n",buffer );
+        send(new_socket , hello , strlen(hello) , 0 );
+        printf("Hello message sent\n");
 
-		_exit(0);
+        _exit(0);
 
-	} else if (pid > 0) {
-		// Parent process
-		close(new_socket);
-		wait(NULL);
-		printf("Child returned\n");
+    } else if (pid > 0) {
+        // Parent process
+        close(new_socket);
+        wait(NULL);
+        printf("Child returned\n");
 		
-	} else {
-		perror("fork failed");
-		exit(EXIT_FAILURE);
-	}
+    } else {
+       perror("fork failed");
+       exit(EXIT_FAILURE);
+    }
 
-	close(server_fd);
+    close(server_fd);
 
     return 0;
 }
