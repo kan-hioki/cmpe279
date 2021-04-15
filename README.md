@@ -1,2 +1,2 @@
 Team Member: Kan Hioki  
-I indivually did the assignment1
+I did the assignment1 by myself
