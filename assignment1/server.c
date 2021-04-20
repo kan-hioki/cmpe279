@@ -20,8 +20,6 @@ int main(int argc, char const *argv[])
     char buffer[102] = {0};
     char *hello = "Hello from server";
 
-    printf("execve=0x%p\n", execve);
-
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
@@ -47,23 +45,26 @@ int main(int argc, char const *argv[])
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    if (listen(server_fd, 3) < 0)
-    {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
-                       (socklen_t*)&addrlen))<0)
-    {
-        perror("accept");
-        exit(EXIT_FAILURE);
-    }
-
+    
     int pid = fork();
     if (pid == 0) {
-        // Child process
+    
+    	// Child process
         struct passwd* user_info = getpwnam("nobody"); // Get user id of nobody
         setuid(user_info->pw_uid); // Change user previlege to nobody from here
+        
+        if (listen(server_fd, 3) < 0)
+        {
+            perror("listen");
+            exit(EXIT_FAILURE);
+        }
+
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
+                       (socklen_t*)&addrlen))<0)
+        {
+           perror("accept");
+           exit(EXIT_FAILURE);
+        }
 
         valread = read( new_socket , buffer, 1024);
         printf("%s\n",buffer );
@@ -74,7 +75,6 @@ int main(int argc, char const *argv[])
 
     } else if (pid > 0) {
         // Parent process
-        close(new_socket);
         wait(NULL);
         printf("Child returned\n");
 		
