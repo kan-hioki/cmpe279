@@ -58,7 +58,7 @@ int main(int argc, char const *argv[])
             putenv(env_fd);
             putenv("PROC=child");
 
-            execl("./server", "./server", NULL);
+            execl(argv[0], argv[0], NULL);
             _exit(EXIT_FAILURE);
             
 	} else if (pid > 0) {
